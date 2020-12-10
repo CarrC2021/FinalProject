@@ -79,10 +79,10 @@ valid_path = './valid'
 batch_size = 100
 train_steps= 30
 val_steps=10
-epochs=1
+epochs=10
 
 model = models.Sequential()
-model = tf.keras.models.load_model('loops_on_loops99.h5')
+model = tf.keras.models.load_model(sys.argv[1])
 model.add_loss('categorical_crossentropy')
 #model.add_metric(name = 'accuracy')
 
@@ -99,6 +99,7 @@ create_folders(train, valid, class_names)
 train_batches = ImageDataGenerator(preprocessing_function=tf.keras.applications.vgg16.preprocess_input).flow_from_directory(directory=train_path, target_size=(224,224), classes=class_names, batch_size=batch_size)
 valid_batches = ImageDataGenerator(preprocessing_function=tf.keras.applications.vgg16.preprocess_input).flow_from_directory(directory=valid_path, target_size=(224,224), classes=class_names, batch_size=batch_size)
 history = model.fit((item for item in train_batches), batch_size=batch_size, epochs = epochs,steps_per_epoch=train_steps, verbose=1, validation_data= (item for item in valid_batches), validation_steps=val_steps)
+model.save(sys.argv[2]+'.h5')
 
 
 

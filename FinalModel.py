@@ -16,7 +16,7 @@ class_names = ['assorted', 'cardboard','cardboard_and_paper', 'metal_cans','plas
 def find_images():
    file_locs = np.array(['lt', 'ty','u','bc'])
    for folder in os.listdir(os.getcwd()):
-      if(folder[-3] == "." or  folder[-4] == "." or folder == "valid" or folder == "test" or folder == "train"):
+      if(folder[-3] == "." or folder[-4] == "." or folder == "valid" or folder == "test" or folder == "train"):
          continue
       #print(1)
       for frames in os.listdir(folder):
@@ -79,6 +79,7 @@ batch_size = 100
 train_steps= 30
 val_steps=10
 epochs=10
+for_num = 1
 
 model = models.Sequential()
 model.add(layers.Conv2D(32, (2,2), activation='relu', input_shape=(224,224,3), data_format ='channels_first'))
@@ -113,10 +114,6 @@ val_loss_values = history_dict['val_loss']
 accuracy = history_dict['acc']
 val_accuracy = history_dict['val_acc']
 
-for_num = 100
-
-#graph_num = epochs*(for_num + 1)
-
 for i in range(for_num):
    arr = find_images()
    arr = arr[1:]
@@ -127,7 +124,7 @@ for i in range(for_num):
    train_batches = ImageDataGenerator(preprocessing_function=tf.keras.applications.vgg16.preprocess_input).flow_from_directory(directory=train_path, target_size=(224,224), classes=class_names, batch_size=batch_size)
    valid_batches = ImageDataGenerator(preprocessing_function=tf.keras.applications.vgg16.preprocess_input).flow_from_directory(directory=valid_path, target_size=(224,224), classes=class_names, batch_size=batch_size)
    history = model.fit((item for item in train_batches), batch_size=batch_size, epochs = epochs,steps_per_epoch=train_steps, verbose=1, validation_data= (item for item in valid_batches), validation_steps=val_steps)
-   history_dict = history.history
+   #history_dict = history.history
    #for j in history_dict['loss']:
     #  loss_values = np.append(loss_values, j)
    #for j in history_dict['val_loss']:
@@ -136,7 +133,7 @@ for i in range(for_num):
     #  accurracy = np.append(accuracy, j)
    #for j in history_dict['val_acc']:
     #  val_accuracy = np.append(val_accuracy, j)
-   model.save(os.getcwd()+'/'+sys.argv[1]+str(i)+'.h5')
+    model.save(os.getcwd()+'/'+sys.argv[1]+str(i)+'.h5')
    
 
 history_dict = history.history
